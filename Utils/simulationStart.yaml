@@ -1,0 +1,29 @@
+# /home/james/.config/tmuxinator/drones.yml - cd ~/bc-drone-follower; source install/setup.bash; ros2 run move_forward move_forward_node
+
+
+name: drones
+root: ~/
+
+windows:
+  - px4-SITL-1:
+      layout: tiled
+      panes:
+        - cd ~/PX4-Autopilot; PX4_SYS_AUTOSTART=4001 PX4_GZ_MODEL_POSE="1,0" PX4_GZ_MODEL=x500 ./build/px4_sitl_default/bin/px4 -i 0
+        - sleep 5;cd ~/PX4-Autopilot; PX4_SYS_AUTOSTART=4002 PX4_GZ_MODEL_POSE="0,0" PX4_GZ_MODEL=x500_depth ./build/px4_sitl_default/bin/px4 -i 1
+  - mavros:
+      panes:
+        - cd ~/PX4_leader-follower_byCameraDetection/Ros_WS; source install/setup.bash; ros2 launch mavros multi_uas.launch
+  - qgroundcontrol:
+      panes:
+        - ./QGroundControl.AppImage
+  - ros2_topics:
+      layout: tiled
+      panes:
+        - cd ~/PX4_leader-follower_byCameraDetection/Ros_WS; source install/setup.bash; ros2 run ros_gz_image image_bridge /semantic/colored_map
+        - cd ~/PX4_leader-follower_byCameraDetection/Ros_WS; source install/setup.bash; ros2 run ros_gz_image image_bridge /depth_cameramain
+  - control:
+      layout: tiled
+      panes:
+        - cd ~/PX4_leader-follower_byCameraDetection/Ros_WS; source install/setup.bash; ros2 run drone_control gui
+        - cd ~/PX4_leader-follower_byCameraDetection/Ros_WS; source install/setup.bash; ros2 run drone_control control
+        
